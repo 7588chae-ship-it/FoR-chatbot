@@ -1,0 +1,1488 @@
+@prefix dm:     <https://example.org/dm#> .
+@prefix for:    <https://example.org/for#> .
+@prefix schema: <https://schema.org/> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct:    <http://purl.org/dc/terms/> .
+
+# FoR 데이터셋 (크리스티아누 호날두 · 맨체스터 유나이티드 · 알나스르)
+# 원본: FoR-Instance, FoR-triple, shcema 시트
+
+<https://example.org/dataset/FoR> a owl:Ontology ;
+    rdfs:label "FoR 데이터셋"@ko .
+
+dm:groupName a owl:DatatypeProperty ; rdfs:label "세부 분류(GroupName)"@ko .
+dm:dataset   a owl:DatatypeProperty ; rdfs:label "데이터셋"@ko .
+
+
+# ===== 클래스 =====
+
+dm:Person a owl:Class ;
+    rdfs:label "인물"@ko, "Person"@en ;
+    rdfs:comment "등장인물: 작품 속 인물 (label 규칙: 이름) / 실존 인물: 실제로 존재하거나 존재했던 사람 (label 규칙: 이름)"@ko .
+
+dm:Organization a owl:Class ;
+    rdfs:label "단체"@ko, "Organization"@en ;
+    rdfs:comment "작중 단체: 작품 속 가문·조직·기관 (label 규칙: 이름) / 실재 단체: 실제 기관·구단·매체·회사 (label 규칙: 이름)"@ko .
+
+dm:Place a owl:Class ;
+    rdfs:label "장소"@ko, "Place"@en ;
+    rdfs:comment "작중 장소: 작품 속 세계·장소 (label 규칙: 이름) / 실재 장소: 실제 도시·국가·건물 (label 규칙: 이름)"@ko .
+
+dm:Event a owl:Class ;
+    rdfs:label "사건"@ko, "Event"@en ;
+    rdfs:comment "사건: 작품 속에서 한 번 일어난 일. 약속·판결·전투도 포함 (label 규칙: [누구]의 [무엇]) / 실재 사건: 실제로 한 번 일어난 일. 수상·채택·인터뷰·입단도 포함 (label 규칙: [누구]의 [무엇])"@ko .
+
+dm:Object a owl:Class ;
+    rdfs:label "사물"@ko, "Object"@en ;
+    rdfs:comment "사물: 작품 속에서 하나뿐인 물건 (label 규칙: 무엇인지 알 수 있는 이름)"@ko .
+
+dm:Work a owl:Class ;
+    rdfs:label "작품"@ko, "Work"@en ;
+    rdfs:comment "작품: 데이터의 소재가 되는 작품 전체 (label 규칙: 작품명)"@ko .
+
+dm:Episode a owl:Class ;
+    rdfs:label "회차"@ko, "Episode"@en ;
+    rdfs:comment "회차: 작품의 화·권 (label 규칙: [작품명] [권] [화])"@ko .
+
+dm:Scene a owl:Class ;
+    rdfs:label "장면"@ko, "Scene"@en ;
+    rdfs:comment "장면: 회차 안의 장면. 근거 위치의 단위 (label 규칙: [데이터셋]_E[회차]_S[장면])"@ko .
+
+dm:Utterance a owl:Class ;
+    rdfs:label "대사"@ko, "Utterance"@en ;
+    rdfs:comment "대사: 인물이 한 특정한 말 (label 규칙: [누구]의 대사: 핵심 말)"@ko .
+
+dm:Document a owl:Class ;
+    rdfs:label "자료"@ko, "Document"@en ;
+    rdfs:comment "자료: 기사·결의안·청문회 기록 등 근거 문서 (label 규칙: [매체·기관]의 [무엇] 기사·문서)"@ko .
+
+dm:Concept a owl:Class ;
+    rdfs:label "개념"@ko, "Concept"@en ;
+    rdfs:comment "형식: 작품의 매체 형식 (label 규칙: 용어) / 장르: 작품의 장르 (label 규칙: 용어) / 세계관 용어: 작품 세계 안에서만 쓰이는 용어 (label 규칙: 용어) / 법·제도: 실제 법·제도·계약 개념 (label 규칙: 용어) / 언어학 용어: 언어학 개념·용어 (label 규칙: 용어)"@ko .
+
+dm:Claim a owl:Class ;
+    rdfs:label "주장"@ko, "Claim"@en ;
+    rdfs:comment "주장: 누군가의 의심·진술·보도·해석. 사실로 확인되지 않은 것 (label 규칙: [주장자]의 진술·의심·보도: 문장)"@ko .
+
+dm:Dilemma a owl:Class ;
+    rdfs:label "딜레마"@ko, "Dilemma"@en ;
+    rdfs:comment "딜레마: 둘 다 지킬 이유가 있지만 둘 다 가질 수 없는 선택의 국면 (label 규칙: [주체]: ~할 것인가)"@ko .
+
+dm:Option a owl:Class ;
+    rdfs:label "선택지"@ko, "Option"@en ;
+    rdfs:comment "선택지: 딜레마에서 고를 수 있었던 길. 실제로 일어나지 않은 길도 포함 (label 규칙: ~한다)"@ko .
+
+# ===== 관계(속성) =====
+
+dm:hasDecisionMaker a owl:ObjectProperty ;
+    rdfs:label "고르는 사람"@ko ;
+    rdfs:comment "딜레마에서 선택해야 하는 사람"@ko ;
+    schema:domainIncludes dm:Dilemma ;
+    schema:rangeIncludes dm:Person .
+
+dm:hasOption a owl:ObjectProperty ;
+    rdfs:label "선택지"@ko ;
+    rdfs:comment "선택지마다 한 행씩. 고르지 않은 선택지도 잇는다"@ko ;
+    schema:domainIncludes dm:Dilemma ;
+    schema:rangeIncludes dm:Option .
+
+dm:actualChooser a owl:ObjectProperty ;
+    rdfs:label "실제로 고른 사람"@ko ;
+    rdfs:comment "실제로 고른 선택지에만 쓴다. 사람이 아니라 선택지가 source"@ko ;
+    schema:domainIncludes dm:Option ;
+    schema:rangeIncludes dm:Person .
+
+dm:isRealizedBy a owl:ObjectProperty ;
+    rdfs:label "실현된 사건"@ko ;
+    rdfs:comment "선택지가 실제 사건으로 이루어졌을 때"@ko ;
+    schema:domainIncludes dm:Option ;
+    schema:rangeIncludes dm:Event .
+
+dm:isOutcomeOf a owl:ObjectProperty ;
+    rdfs:label "딜레마의 결과"@ko ;
+    rdfs:comment "딜레마에서 실제로 일어난 결과. target은 선택지가 아니라 딜레마"@ko ;
+    schema:domainIncludes dm:Event ;
+    schema:rangeIncludes dm:Dilemma .
+
+dm:isReasonFor a owl:ObjectProperty ;
+    rdfs:label "선택 이유"@ko ;
+    rdfs:comment "그 선택지를 고르게 된 이유. 해석이면 remark에 작업자 해석: 표시"@ko ;
+    schema:domainIncludes dm:Claim, dm:Event ;
+    schema:rangeIncludes dm:Option .
+
+dm:hasParticipant a owl:ObjectProperty ;
+    rdfs:label "참여자"@ko ;
+    rdfs:comment "사건에 참여한 사람·단체마다 한 행씩"@ko ;
+    schema:domainIncludes dm:Event ;
+    schema:rangeIncludes dm:Person, dm:Organization .
+
+dm:precedes a owl:ObjectProperty ;
+    rdfs:label "앞선 사건"@ko ;
+    rdfs:comment "앞서 일어난 사건이 source. 순서만 나타낸다"@ko ;
+    schema:domainIncludes dm:Event ;
+    schema:rangeIncludes dm:Event .
+
+dm:hasCause a owl:ObjectProperty ;
+    rdfs:label "원인"@ko ;
+    rdfs:comment "작품·기록에서 원인이 확인된 경우에만 쓴다"@ko ;
+    schema:domainIncludes dm:Event ;
+    schema:rangeIncludes dm:Event .
+
+dm:revealedIn a owl:ObjectProperty ;
+    rdfs:label "공개 위치"@ko ;
+    rdfs:comment "작중 시점과 독자에게 공개되는 위치가 다를 때"@ko ;
+    schema:domainIncludes dm:Event, dm:Claim ;
+    schema:rangeIncludes dm:Episode, dm:Scene, dm:Document .
+
+dm:hasClaimant a owl:ObjectProperty ;
+    rdfs:label "주장자"@ko ;
+    rdfs:comment "주장에는 반드시 주장자를 잇는다"@ko ;
+    schema:domainIncludes dm:Claim ;
+    schema:rangeIncludes dm:Person, dm:Organization .
+
+dm:isAbout a owl:ObjectProperty ;
+    rdfs:label "대상"@ko ;
+    rdfs:comment "주장·자료가 무엇에 관한 것인지"@ko ;
+    schema:domainIncludes dm:Claim, dm:Document .
+
+dm:isEvidenceFor a owl:ObjectProperty ;
+    rdfs:label "근거"@ko ;
+    rdfs:comment "주장이나 딜레마를 뒷받침하는 사건·대사·자료"@ko ;
+    schema:domainIncludes dm:Event, dm:Utterance, dm:Document ;
+    schema:rangeIncludes dm:Claim, dm:Dilemma .
+
+dm:leadsTo a owl:ObjectProperty ;
+    rdfs:label "이어지는 주장"@ko ;
+    rdfs:comment "한 주장이 다른 주장으로 이어질 때"@ko ;
+    schema:domainIncludes dm:Claim ;
+    schema:rangeIncludes dm:Claim .
+
+dm:reports a owl:ObjectProperty ;
+    rdfs:label "보도한 사건"@ko ;
+    rdfs:comment "기사가 보도한 사건. 발언일은 사건에, 보도일은 기사에 적는다"@ko ;
+    schema:domainIncludes dm:Document ;
+    schema:rangeIncludes dm:Event .
+
+dm:mentions a owl:ObjectProperty ;
+    rdfs:label "언급한 대상"@ko ;
+    rdfs:comment "인터뷰·기사·대사에서 언급한 대상"@ko ;
+    schema:domainIncludes dm:Event, dm:Document, dm:Utterance .
+
+dm:nextScene a owl:ObjectProperty ;
+    rdfs:label "다음 장면"@ko ;
+    rdfs:comment "장면의 순서"@ko ;
+    schema:domainIncludes dm:Scene ;
+    schema:rangeIncludes dm:Scene .
+
+dm:depicts a owl:ObjectProperty ;
+    rdfs:label "그려진 사건"@ko ;
+    rdfs:comment "회차·장면에 그려진 사건"@ko ;
+    schema:domainIncludes dm:Episode, dm:Scene ;
+    schema:rangeIncludes dm:Event, dm:Claim .
+
+dm:receivedAward a owl:ObjectProperty ;
+    rdfs:label "받은 상"@ko ;
+    rdfs:comment "수상 사건과 잇는다. 수상일은 수상 사건 remark에"@ko ;
+    schema:domainIncludes dm:Person, dm:Work ;
+    schema:rangeIncludes dm:Event .
+
+for:manages a owl:ObjectProperty ;
+    rdfs:label "감독을 맡은 구단"@ko ;
+    rdfs:comment "감독이 source"@ko ;
+    schema:domainIncludes dm:Person ;
+    schema:rangeIncludes dm:Organization .
+
+for:closesOption a owl:ObjectProperty ;
+    rdfs:label "닫힌 선택지"@ko ;
+    rdfs:comment "사건 때문에 더 이상 고를 수 없게 된 선택지"@ko ;
+    schema:domainIncludes dm:Event ;
+    schema:rangeIncludes dm:Option .
+
+for:basedOn a owl:ObjectProperty ;
+    rdfs:label "근거 제도"@ko ;
+    rdfs:comment "사건이 근거로 삼은 실제 법·제도·계약 방식"@ko ;
+    schema:domainIncludes dm:Event ;
+    schema:rangeIncludes dm:Concept .
+
+# ===== 인스턴스 =====
+
+dm:A00033 a dm:Concept ;
+    rdfs:label "상호 합의 계약 해지"@ko ;
+    dm:groupName "법·제도"@ko ;
+    rdfs:comment "계약 당사자 양쪽이 합의해 계약 기간이 끝나기 전에 계약을 끝내는 방식이다. 2022년 11월 호날두와 맨체스터 유나이티드의 계약 해지가 이 방식으로 이루어졌다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00034 a dm:Concept ;
+    rdfs:label "자유계약"@ko ;
+    dm:groupName "법·제도"@ko ;
+    rdfs:comment "계약이 끝나거나 해지되어 소속 구단이 없는 선수가 이적료 없이 다른 구단과 계약하는 것이다. 호날두는 맨체스터 유나이티드와 계약을 해지한 뒤 자유계약 신분으로 알나스르에 입단했다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00181 a dm:Person ;
+    rdfs:label "피어스 모건"@ko ;
+    dm:groupName "실존 인물"@ko ;
+    rdfs:comment "1965년 출생, 영국의 텔레비전 진행자 및 언론인이다. 2022년 11월 호날두를 인터뷰했다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00035 a dm:Person ;
+    rdfs:label "크리스티아누 호날두"@ko ;
+    dm:groupName "실존 인물"@ko ;
+    rdfs:comment "1985년 2월 5일 포르투갈 마데이라섬 푼샬에서 태어난 축구 선수다. 스포르팅 CP에서 프로 생활을 시작해 맨체스터 유나이티드(2003~2009), 레알 마드리드(2009~2018), 유벤투스(2018~2021)에서 뛰었다. 2021년 8월 맨체스터 유나이티드에 복귀했고, 2022년 11월 계약 해지 뒤 2022년 12월 30일 알나스르에 입단했다. 포르투갈 국가대표팀 주장이며 발롱도르를 5회 받았다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00036 a dm:Person ;
+    rdfs:label "에릭 텐 하흐"@ko ;
+    dm:groupName "실존 인물"@ko ;
+    rdfs:comment "1970년 출생, 네덜란드 출신 축구 감독이다. 2022년 5월 맨체스터 유나이티드 감독으로 부임해 2024년 10월 경질되었다. 2022-23 시즌 호날두와 갈등을 빚었다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00037 a dm:Person ;
+    rdfs:label "메이슨 그린우드"@ko ;
+    dm:groupName "실존 인물"@ko ;
+    rdfs:comment "2001년 출생, 2022년 당시 맨체스터 유나이티드 소속 선수다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00038 a dm:Person ;
+    rdfs:label "해리 매과이어"@ko ;
+    dm:groupName "실존 인물"@ko ;
+    rdfs:comment "1993년 출생, 2022-23 시즌 맨체스터 유나이티드의 주장이었다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00039 a dm:Organization ;
+    rdfs:label "맨체스터 유나이티드"@ko ;
+    dm:groupName "실재 단체"@ko ;
+    rdfs:comment "잉글랜드 맨체스터를 연고로 한 프로축구 구단이다. 잉글랜드 프리미어리그에 속한다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00040 a dm:Organization ;
+    rdfs:label "알나스르"@ko ;
+    dm:groupName "실재 단체"@ko ;
+    rdfs:comment "사우디아라비아 리야드를 연고로 한 프로축구 구단으로, 사우디 프로리그에 속한다. 2022년 12월 30일 호날두가 입단했다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00041 a dm:Place ;
+    rdfs:label "영국"@ko ;
+    dm:groupName "실재 장소"@ko ;
+    rdfs:comment "맨체스터 유나이티드의 연고지 맨체스터가 있는 나라다. 맨체스터 유나이티드는 잉글랜드 프리미어리그에 속한다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00042 a dm:Place ;
+    rdfs:label "사우디아라비아"@ko ;
+    dm:groupName "실재 장소"@ko ;
+    rdfs:comment "알나스르의 연고지 리야드가 있는 나라다. 알나스르는 사우디 프로리그에 속한다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00043 a dm:Event ;
+    rdfs:label "호날두와 맨체스터 유나이티드의 계약 해지"@ko ;
+    dm:groupName "실재 사건"@ko ;
+    rdfs:comment "2022년 11월 22일 호날두와 맨체스터 유나이티드가 상호 합의로 계약을 끝냈다. 피어스 모건 인터뷰가 처음 공개된 지 9일 뒤였다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00044 a dm:Event ;
+    rdfs:label "호날두의 알나스르 입단"@ko ;
+    dm:groupName "실재 사건"@ko ;
+    rdfs:comment "2022년 12월 30일 알나스르가 호날두 영입을 발표했다. 계약 기간은 2025년 여름까지 약 2년 6개월이다. 이후 2025년 6월 2027년까지 재계약했다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00045 a dm:Event ;
+    rdfs:label "호날두의 피어스 모건 인터뷰"@ko ;
+    dm:groupName "실재 사건"@ko ;
+    rdfs:comment "2022년 11월 13일 일부 내용이 처음 공개되고 16~17일 TalkTV '피어스 모건 언센서드'에서 방송된 인터뷰로, 호날두가 구단과 텐 하흐 감독을 공개적으로 비판했다."@ko ;
+    schema:url <https://www.youtube.com/watch?v=Jk9uJRMvBIA> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00046 a dm:Claim ;
+    rdfs:label "스포탈코리아의 보도: 호날두가 그린우드의 플레이를 비판했다"@ko ;
+    dm:groupName "주장"@ko ;
+    rdfs:comment "2021년 10월 27일 스포탈코리아의 보도로, 호날두가 그린우드의 플레이에 불만을 드러냈다는 내용이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00047 a dm:Claim ;
+    rdfs:label "스포탈코리아의 보도: 호날두와 매과이어가 팀 내 주도권을 두고 갈등했다"@ko ;
+    dm:groupName "주장"@ko ;
+    rdfs:comment "2022년 2월 18일 스포탈코리아의 보도로, 라커룸이 호날두 쪽과 매과이어 쪽으로 나뉘었다는 내용이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00048 a dm:Event ;
+    rdfs:label "호날두의 토트넘전 교체 투입 거부"@ko ;
+    dm:groupName "실재 사건"@ko ;
+    rdfs:comment "2022년 10월 19일 토트넘전에서 호날두가 교체 투입을 거부하고 경기 도중 경기장을 떠났다. 텐 하흐 감독은 이후 호날두를 다음 경기 명단에서 제외했다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00049 a dm:Event ;
+    rdfs:label "맨체스터 유나이티드의 2022-23 챔피언스리그 진출 실패"@ko ;
+    dm:groupName "실재 사건"@ko ;
+    rdfs:comment "맨체스터 유나이티드가 2021-22 시즌 프리미어리그 6위에 그쳐 2022-23 시즌 챔피언스리그 출전권을 얻지 못했다(유로파리그 진출)."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00050 a dm:Event ;
+    rdfs:label "호날두의 2022 프리시즌 불참"@ko ;
+    dm:groupName "실재 사건"@ko ;
+    rdfs:comment "2022년 7월 호날두가 가족 사정을 이유로 프리시즌 투어에 합류하지 않았다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00051 a dm:Dilemma ;
+    rdfs:label "호날두: 맨체스터 유나이티드에 남을 것인가, 알나스르로 갈 것인가"@ko ;
+    dm:groupName "딜레마"@ko ;
+    rdfs:comment "맨체스터 유나이티드에 남을지, 알나스르로 갈지를 두고 호날두가 내려야 했던 선택이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00052 a dm:Option ;
+    rdfs:label "맨체스터 유나이티드에 남는다"@ko ;
+    dm:groupName "선택지"@ko ;
+    rdfs:comment "맨체스터 유나이티드와 맺은 계약 기간을 채우며 팀에 남는 선택지이다. 작업자 해석: 다음 시즌 챔피언스리그 복귀를 노리며 유럽 무대에서 인정받는 커리어를 이어 가는 것이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00053 a dm:Option ;
+    rdfs:label "알나스르로 간다"@ko ;
+    dm:groupName "선택지"@ko ;
+    rdfs:comment "맨체스터 유나이티드를 떠나 사우디아라비아 구단 알나스르로 이적하는 선택지다. 작업자 해석: 유럽 정상급 무대를 떠나는 대신 축구 역사상 최고 수준의 연봉과 '새로운 도전'이라는 명분을 얻는 길이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00054 a dm:Organization ;
+    rdfs:label "BBC"@ko ;
+    dm:groupName "실재 단체"@ko ;
+    rdfs:comment "영국의 공영 방송사로, 호날두의 알나스르 이적과 입단 기자회견을 보도한 매체다."@ko ;
+    schema:url <https://www.bbc.com> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00055 a dm:Organization ;
+    rdfs:label "스카이스포츠"@ko ;
+    dm:groupName "실재 단체"@ko ;
+    rdfs:comment "영국의 스포츠 전문 방송·보도 매체다."@ko ;
+    schema:url <https://www.skysports.com> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00148 a dm:Organization ;
+    rdfs:label "피어스 모건 언센서드 유튜브 채널"@ko ;
+    dm:groupName "실재 단체"@ko ;
+    rdfs:comment "언론인 피어스 모건이 진행하는 토크쇼 '피어스 모건 언센서드'의 유튜브 채널이다."@ko ;
+    schema:url <https://www.youtube.com/@PiersMorganUncensored> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00149 a dm:Organization ;
+    rdfs:label "스포탈코리아"@ko ;
+    dm:groupName "실재 단체"@ko ;
+    rdfs:comment "대한민국의 스포츠 및 종합 인터넷 미디어이다."@ko ;
+    schema:url <https://www.sportalkorea.com/> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00056 a dm:Document ;
+    rdfs:label "스카이스포츠 2022-11-15 호날두 인터뷰 기사"@ko ;
+    dm:groupName "자료"@ko ;
+    rdfs:comment "호날두가 인터뷰에서 프리시즌 불참 당시 구단이 자신의 해명을 의심했다고 말한 내용을 보도한 기사다."@ko ;
+    schema:url <https://www.skysports.com/football/news/12747639/cristiano-ronaldo-man-utd-doubted-me-over-my-sick-daughter-when-i-missed-pre-season> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00057 a dm:Document ;
+    rdfs:label "BBC 2023-01-03 호날두 알나스르 입단 기사"@ko ;
+    dm:groupName "자료"@ko ;
+    rdfs:comment "호날두의 알나스르 입단 기자회견 발언을 보도한 기사다. 호날두는 유럽에서 할 일을 다 했고 아시아에서 새로운 도전을 시작한다고 말했다."@ko ;
+    schema:url <https://www.bbc.com/sport/football/64155302> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00058 a dm:Claim ;
+    rdfs:label "호날두의 진술: 구단이 프리시즌 불참 이유를 의심했다"@ko ;
+    dm:groupName "주장"@ko ;
+    rdfs:comment "호날두가 인터뷰에서, 가족 사정으로 프리시즌에 빠졌을 때 구단이 자신의 말을 믿지 않았다고 말했다. 본인 발언이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00059 a dm:Claim ;
+    rdfs:label "호날두의 진술: 유럽에서 할 일을 다 했고 아시아에서 새 도전을 한다"@ko ;
+    dm:groupName "주장"@ko ;
+    rdfs:comment "호날두가 알나스르 입단 기자회견에서 이적 이유를 밝힌 발언이다. 본인 발언이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-10-13"^^xsd:date .
+
+dm:A00150 a dm:Organization ;
+    rdfs:label "레알 마드리드"@ko ;
+    dm:groupName "실재 단체"@ko ;
+    rdfs:comment "스페인 마드리드를 연고로 한 프로축구 구단이다. 호날두가 2009년부터 2018년까지 뛰며 챔피언스리그 4회 우승을 차지했다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00151 a dm:Organization ;
+    rdfs:label "유벤투스"@ko ;
+    dm:groupName "실재 단체"@ko ;
+    rdfs:comment "이탈리아 토리노를 연고로 한 프로축구 구단이다. 호날두가 2018년부터 2021년까지 뛰었다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00152 a dm:Organization ;
+    rdfs:label "스포르팅 CP"@ko ;
+    dm:groupName "실재 단체"@ko ;
+    rdfs:comment "포르투갈 리스본을 연고로 한 프로축구 구단이다. 호날두가 프로 생활을 시작한 팀이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00153 a dm:Organization ;
+    rdfs:label "포르투갈 축구 국가대표팀"@ko ;
+    dm:groupName "실재 단체"@ko ;
+    rdfs:comment "포르투갈의 남자 축구 국가대표팀이다. 호날두는 2003년 국가대표로 데뷔했고, 2022년 당시 주장이었다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00154 a dm:Place ;
+    rdfs:label "포르투갈"@ko ;
+    dm:groupName "실재 장소"@ko ;
+    rdfs:comment "호날두의 모국이다. 호날두는 포르투갈 마데이라섬 푼샬에서 태어났다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00155 a dm:Event ;
+    rdfs:label "호날두의 발롱도르 5회 수상"@ko ;
+    dm:groupName "실재 사건"@ko ;
+    rdfs:comment "호날두는 2008년(맨체스터 유나이티드), 2013·2014·2016·2017년(레알 마드리드) 다섯 차례 발롱도르를 받았다."@ko ;
+    schema:url <https://www.rte.ie/sport/soccer/2017/1207/925799-ronaldo-wins-ballon-dor-number-5/> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00156 a dm:Event ;
+    rdfs:label "호날두의 UEFA 챔피언스리그 5회 우승"@ko ;
+    dm:groupName "실재 사건"@ko ;
+    rdfs:comment "호날두는 2008년 맨체스터 유나이티드, 2014·2016·2017·2018년 레알 마드리드에서 챔피언스리그 우승을 차지했다."@ko ;
+    schema:url <https://www.uefa.com/uefachampionsleague/news/02a7-2136b8f054ea-76a61b3f9d24-1000--cristiano-ronaldo-in-the-champions-league-records-stats-wh/> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00157 a dm:Event ;
+    rdfs:label "포르투갈의 유로 2016 우승"@ko ;
+    dm:groupName "실재 사건"@ko ;
+    rdfs:comment "2016년 7월 포르투갈이 UEFA 유로 2016에서 우승했다. 호날두가 주장으로 참가했다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00158 a dm:Event ;
+    rdfs:label "호날두의 UEFA 챔피언스리그 역대 최다 득점자 특별상 수상"@ko ;
+    dm:groupName "실재 사건"@ko ;
+    rdfs:comment "2024년 8월 29일 모나코에서 열린 2024-25 챔피언스리그 조 추첨식에서 UEFA가 호날두에게 역대 최다 득점자 특별상을 주었다. 호날두의 챔피언스리그 통산 기록은 183경기 140골로 역대 1위다(2위 메시 129골). 득점왕 7회, 한 시즌 최다 17골(2013-14)도 역대 최고 기록이다. 140골은 호날두가 유럽을 떠난 2022년에 이미 확정된 기록이다."@ko ;
+    schema:url <https://www.uefa.com/uefachampionsleague/news/0290-1bba8222dbee-c67bbff473ca-1000--cristiano-ronaldo-honoured-as-uefa-champions-league-all-/> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00159 a dm:Organization ;
+    rdfs:label "UEFA"@ko ;
+    dm:groupName "실재 단체"@ko ;
+    rdfs:comment "유럽축구연맹으로, UEFA 챔피언스리그를 주최하는 단체다."@ko ;
+    schema:url <https://www.uefa.com> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00160 a dm:Document ;
+    rdfs:label "UEFA의 호날두 챔피언스리그 역대 최다 득점자 특별상 발표 자료"@ko ;
+    dm:groupName "자료"@ko ;
+    rdfs:comment "UEFA가 호날두의 챔피언스리그 기록(183경기 140골, 우승 5회, 득점왕 7회)을 정리해 특별상 수여를 알린 자료다."@ko ;
+    schema:url <https://www.uefa.com/uefachampionsleague/news/0290-1bb5efad911e-b5ec27a23e37-1000--cristiano-ronaldo-to-be-honoured-as-uefa-champions-league/> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00161 a dm:Organization ;
+    rdfs:label "포포투"@ko ;
+    dm:groupName "실재 단체"@ko ;
+    rdfs:comment "영국에서 창간된 축구 전문 잡지다."@ko ;
+    schema:url <https://www.fourfourtwo.com> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00162 a dm:Document ;
+    rdfs:label "포포투 2009-11 호날두 인터뷰"@ko ;
+    dm:groupName "자료"@ko ;
+    rdfs:comment "레알 마드리드 이적 직후 호날두가 축구와 자신의 목표에 대해 이야기한 포포투 말레이시아 인터뷰다."@ko ;
+    schema:url <https://www.fourfourtwo.com/features/cristiano-ronaldo-q> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00163 a dm:Claim ;
+    rdfs:label "호날두의 진술: 축구는 내 인생이고, 축구 없이는 무엇을 할지 모르겠다"@ko ;
+    dm:groupName "주장"@ko ;
+    rdfs:comment "호날두가 2009년 인터뷰에서 축구하는 것을 사랑하며 축구가 자기 인생이라고 말했다. 본인 발언이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00164 a dm:Claim ;
+    rdfs:label "호날두의 진술: 트로피를 최대한 많이 모아 마라도나·펠레처럼 역사의 첫 페이지에 오르고 싶다"@ko ;
+    dm:groupName "주장"@ko ;
+    rdfs:comment "같은 인터뷰에서 팀과 개인 트로피를 최대한 많이 모으는 것이 야망이고, 마라도나·펠레처럼 역사의 첫 페이지에 남고 싶다고 말했다. 본인 발언이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00165 a dm:Document ;
+    rdfs:label "피어스 모건 언센서드의 호날두 인터뷰 영상"@ko ;
+    dm:groupName "자료"@ko ;
+    rdfs:comment "피어스 모건 언센서드 유튜브 채널에 올라온 2022년 11월 호날두 인터뷰 영상이다."@ko ;
+    schema:url <https://www.youtube.com/watch?v=Jk9uJRMvBIA> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00166 a dm:Claim ;
+    rdfs:label "호날두의 진술: 텐 하흐가 나를 존중하지 않으니 나도 그를 존중하지 않는다"@ko ;
+    dm:groupName "주장"@ko ;
+    rdfs:comment "피어스 모건 인터뷰에서 텐 하흐 감독에 대해, 그가 자신을 존중하지 않기 때문에 자신도 그를 존중하지 않는다고 말했다. 본인 발언이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00167 a dm:Claim ;
+    rdfs:label "호날두의 진술: 감독과 구단 고위층이 나를 내보내려 해 배신감을 느꼈다"@ko ;
+    dm:groupName "주장"@ko ;
+    rdfs:comment "피어스 모건 인터뷰에서 감독뿐 아니라 구단 고위층 두세 명이 자신을 내보내려 했고, 이번 시즌뿐 아니라 지난 시즌에도 자신을 원하지 않는 사람들이 있다고 느껴 배신감을 느꼈다고 말했다. 본인 발언이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00168 a dm:Claim ;
+    rdfs:label "호날두의 진술: 퍼거슨 감독이 떠난 뒤 구단에 발전이 없었다"@ko ;
+    dm:groupName "주장"@ko ;
+    rdfs:comment "피어스 모건 인터뷰에서 알렉스 퍼거슨 감독이 떠난 뒤 구단에 아무런 발전이 없었다고 말했다. 본인 발언이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00169 a dm:Claim ;
+    rdfs:label "호날두의 진술: 나는 구단이 잘되기를 바라고 구단을 사랑한다"@ko ;
+    dm:groupName "주장"@ko ;
+    rdfs:comment "피어스 모건 인터뷰에서 구단이 잘되기를 바라서 맨체스터 유나이티드로 돌아왔고 구단을 사랑한다고 말했다. 본인 발언이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00170 a dm:Claim ;
+    rdfs:label "텐 하흐의 진술: 호날두는 여전히 팀의 중요한 선수다"@ko ;
+    dm:groupName "주장"@ko ;
+    rdfs:comment "토트넘전 교체 투입 거부 이후 텐 하흐 감독이 호날두가 여전히 팀의 중요한 선수라고 말했다. 감독 본인 발언이다."@ko ;
+    schema:url <https://www.businesslive.co.za/bd/sport/soccer/2022-11-14-ronaldo-accuses-manchester-united-of-betrayal/> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00171 a dm:Document ;
+    rdfs:label "BBC 2022-12-30 호날두 알나스르 입단 기사"@ko ;
+    dm:groupName "자료"@ko ;
+    rdfs:comment "호날두가 2025년까지 알나스르와 계약했다는 소식과 연봉 보도를 다룬 기사다."@ko ;
+    schema:url <https://bbc.in/3vrh1Iv> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00172 a dm:Claim ;
+    rdfs:label "BBC의 보도: 호날두는 알나스르에서 축구 역사상 최고 연봉을 받는다"@ko ;
+    dm:groupName "주장"@ko ;
+    rdfs:comment "BBC는 호날두가 알나스르에서 연 1억 7,700만 파운드가 넘는, 축구 역사상 최고 연봉을 받을 것이라고 보도했다. 구단이 공식 발표한 금액이 아니라 보도 내용이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00173 a dm:Event ;
+    rdfs:label "호날두의 알나스르 입단 기자회견"@ko ;
+    dm:groupName "실재 사건"@ko ;
+    rdfs:comment "2023년 1월 3일 사우디아라비아 리야드의 므르술 파크에서 열린 호날두의 알나스르 공식 입단 기자회견이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00174 a dm:Claim ;
+    rdfs:label "호날두의 진술: 유럽·브라질·호주·미국·포르투갈 구단의 제안을 받았지만 알나스르와의 약속을 지켰다"@ko ;
+    dm:groupName "주장"@ko ;
+    rdfs:comment "입단 기자회견에서 유럽, 브라질, 호주, 미국, 포르투갈의 여러 구단이 자신을 영입하려 했지만 알나스르에 약속했다고 말했다. 본인 발언이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00175 a dm:Claim ;
+    rdfs:label "호날두의 진술: 사우디 축구와 이 나라에 대한 시각을 바꾸고 싶고, 사우디행이 커리어의 끝은 아니다"@ko ;
+    dm:groupName "주장"@ko ;
+    rdfs:comment "입단 기자회견에서 사우디아라비아와 사우디 축구에 대한 사람들의 시각을 바꾸고 싶다고 했고, 사우디에 온 것이 커리어의 끝이 아니며 이기고 즐기러 왔다고 말했다. 본인 발언이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00176 a dm:Organization ;
+    rdfs:label "TNT 스포츠"@ko ;
+    dm:groupName "실재 단체"@ko ;
+    rdfs:comment "영국의 스포츠 방송·보도 매체다."@ko ;
+    schema:url <https://www.tntsports.co.uk> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00177 a dm:Document ;
+    rdfs:label "TNT 스포츠 2023-01-03 호날두 알나스르 입단 기자회견 기사"@ko ;
+    dm:groupName "자료"@ko ;
+    rdfs:comment "호날두의 알나스르 입단 기자회견 발언을 보도한 기사다."@ko ;
+    schema:url <https://www.tntsports.co.uk/football/transfers/2022-2023/its-not-the-end-of-my-career-cristiano-ronaldo-unveiled-as-al-nassr-player-and-says-my-work-is-done-_sto9298527/story.shtml> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00178 a dm:Claim ;
+    rdfs:label "호날두의 진술: 유럽에서 기록을 다 깼으니 여기서도 기록을 깨고 싶다"@ko ;
+    dm:groupName "주장"@ko ;
+    rdfs:comment "입단 기자회견에서 자신은 특별한 선수이고 유럽에서 모든 기록을 깼으며 사우디에서도 몇 가지 기록을 깨고 싶다고 말했다. 본인 발언이다."@ko ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00179 a dm:Document ;
+    rdfs:label "Dawn 2023-01-03 호날두 알나스르 입단 기사"@ko ;
+    dm:groupName "자료"@ko ;
+    rdfs:comment "AFP 통신 기사를 실은 기사로, 호날두의 입단 기자회견 발언을 보도했다."@ko ;
+    schema:url <https://dawn.com/news/1729736/cristiano-ronaldo-embracing-new-challenge-at-al-nassr-after-winning-everything-in-europe> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+dm:A00180 a dm:Organization ;
+    rdfs:label "Dawn"@ko ;
+    dm:groupName "실재 단체"@ko ;
+    rdfs:comment "파키스탄의 영자 일간지다."@ko ;
+    schema:url <https://www.dawn.com> ;
+    dm:dataset "FoR" ;
+    dct:creator "승민"@ko, "정훈"@ko, "민규"@ko ;
+    dct:created "2026-11-12"^^xsd:date .
+
+# ===== 관계 트리플 =====
+
+dm:A00035 schema:memberOf dm:A00039 .
+dm:A00035 schema:memberOf dm:A00040 .
+dm:A00039 schema:location dm:A00041 .
+dm:A00040 schema:location dm:A00042 .
+dm:A00036 for:manages dm:A00039 .
+dm:A00037 schema:memberOf dm:A00039 .
+dm:A00038 schema:memberOf dm:A00039 .
+dm:A00043 dm:hasParticipant dm:A00035 .
+dm:A00043 dm:hasParticipant dm:A00039 .
+dm:A00045 dm:precedes dm:A00043 .
+dm:A00045 dm:hasParticipant dm:A00035 .
+dm:A00045 dm:mentions dm:A00036 .
+dm:A00045 dm:mentions dm:A00039 .
+dm:A00051 dm:hasOption dm:A00052 .
+dm:A00051 dm:hasOption dm:A00053 .
+dm:A00043 for:closesOption dm:A00052 .
+dm:A00053 dm:isRealizedBy dm:A00044 .
+dm:A00051 dm:hasDecisionMaker dm:A00035 .
+dm:A00044 dm:isOutcomeOf dm:A00051 .
+dm:A00053 dm:actualChooser dm:A00035 .
+dm:A00044 dm:hasParticipant dm:A00035 .
+dm:A00044 dm:hasParticipant dm:A00040 .
+dm:A00043 for:basedOn dm:A00033 .
+dm:A00044 for:basedOn dm:A00034 .
+dm:A00049 dm:precedes dm:A00050 .
+dm:A00050 dm:precedes dm:A00048 .
+dm:A00048 dm:precedes dm:A00045 .
+dm:A00043 dm:precedes dm:A00044 .
+dm:A00044 dm:precedes dm:A00173 .
+dm:A00049 dm:hasParticipant dm:A00039 .
+dm:A00050 dm:hasParticipant dm:A00035 .
+dm:A00048 dm:hasParticipant dm:A00035 .
+dm:A00048 dm:hasParticipant dm:A00039 .
+dm:A00045 dm:hasParticipant dm:A00181 .
+dm:A00049 dm:isReasonFor dm:A00053 .
+dm:A00058 dm:isReasonFor dm:A00053 .
+dm:A00166 dm:isReasonFor dm:A00053 .
+dm:A00167 dm:isReasonFor dm:A00053 .
+dm:A00169 dm:isReasonFor dm:A00052 .
+dm:A00172 dm:isReasonFor dm:A00053 .
+dm:A00059 dm:isReasonFor dm:A00053 .
+dm:A00174 dm:isReasonFor dm:A00053 .
+dm:A00175 dm:isReasonFor dm:A00053 .
+dm:A00178 dm:isReasonFor dm:A00053 .
+dm:A00165 schema:publisher dm:A00148 .
+dm:A00165 dm:reports dm:A00045 .
+dm:A00056 schema:publisher dm:A00055 .
+dm:A00056 dm:reports dm:A00045 .
+dm:A00058 dm:hasClaimant dm:A00035 .
+dm:A00058 dm:revealedIn dm:A00056 .
+dm:A00058 dm:isAbout dm:A00050 .
+dm:A00166 dm:hasClaimant dm:A00035 .
+dm:A00166 dm:isAbout dm:A00036 .
+dm:A00166 dm:revealedIn dm:A00165 .
+dm:A00167 dm:hasClaimant dm:A00035 .
+dm:A00167 dm:isAbout dm:A00039 .
+dm:A00167 dm:revealedIn dm:A00165 .
+dm:A00168 dm:hasClaimant dm:A00035 .
+dm:A00168 dm:isAbout dm:A00039 .
+dm:A00168 dm:revealedIn dm:A00165 .
+dm:A00169 dm:hasClaimant dm:A00035 .
+dm:A00169 dm:isAbout dm:A00039 .
+dm:A00169 dm:revealedIn dm:A00165 .
+dm:A00170 dm:hasClaimant dm:A00036 .
+dm:A00170 dm:isAbout dm:A00035 .
+dm:A00048 dm:isEvidenceFor dm:A00166 .
+dm:A00046 dm:hasClaimant dm:A00149 .
+dm:A00046 dm:isAbout dm:A00037 .
+dm:A00047 dm:hasClaimant dm:A00149 .
+dm:A00047 dm:isAbout dm:A00038 .
+dm:A00173 dm:hasParticipant dm:A00035 .
+dm:A00173 dm:hasParticipant dm:A00040 .
+dm:A00057 schema:publisher dm:A00054 .
+dm:A00057 dm:reports dm:A00173 .
+dm:A00059 dm:hasClaimant dm:A00035 .
+dm:A00059 dm:revealedIn dm:A00057 .
+dm:A00174 dm:hasClaimant dm:A00035 .
+dm:A00174 dm:revealedIn dm:A00057 .
+dm:A00171 schema:publisher dm:A00054 .
+dm:A00171 dm:reports dm:A00044 .
+dm:A00172 dm:hasClaimant dm:A00054 .
+dm:A00172 dm:revealedIn dm:A00171 .
+dm:A00172 dm:isAbout dm:A00044 .
+dm:A00177 schema:publisher dm:A00176 .
+dm:A00177 dm:reports dm:A00173 .
+dm:A00175 dm:hasClaimant dm:A00035 .
+dm:A00175 dm:revealedIn dm:A00177 .
+dm:A00179 schema:publisher dm:A00180 .
+dm:A00179 dm:reports dm:A00173 .
+dm:A00178 dm:hasClaimant dm:A00035 .
+dm:A00178 dm:revealedIn dm:A00179 .
+dm:A00035 schema:memberOf dm:A00152 .
+dm:A00035 schema:memberOf dm:A00150 .
+dm:A00035 schema:memberOf dm:A00151 .
+dm:A00035 schema:memberOf dm:A00153 .
+dm:A00152 schema:location dm:A00154 .
+dm:A00035 dm:receivedAward dm:A00155 .
+dm:A00035 dm:receivedAward dm:A00156 .
+dm:A00035 dm:receivedAward dm:A00158 .
+dm:A00157 dm:hasParticipant dm:A00153 .
+dm:A00157 dm:hasParticipant dm:A00035 .
+dm:A00158 dm:hasParticipant dm:A00159 .
+dm:A00160 schema:publisher dm:A00159 .
+dm:A00160 dm:reports dm:A00158 .
+dm:A00162 schema:publisher dm:A00161 .
+dm:A00163 dm:hasClaimant dm:A00035 .
+dm:A00163 dm:revealedIn dm:A00162 .
+dm:A00164 dm:hasClaimant dm:A00035 .
+dm:A00164 dm:revealedIn dm:A00162 .
+
+# ===== 트리플 설명(remark) — RDF 표준 reification =====
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00035 ;
+    rdf:predicate schema:memberOf ;
+    rdf:object dm:A00039 ;
+    rdfs:comment "크리스티아누 호날두는 2003년부터 2009년까지, 그리고 2021년 8월부터 2022년 11월 22일 계약 해지 전까지 두 차례 맨체스터 유나이티드 소속이었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00035 ;
+    rdf:predicate schema:memberOf ;
+    rdf:object dm:A00040 ;
+    rdfs:comment "크리스티아누 호날두는 2022년 12월 30일 알나스르에 입단해 현재까지 소속이다(2025년 6월 2027년까지 재계약)."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00039 ;
+    rdf:predicate schema:location ;
+    rdf:object dm:A00041 ;
+    rdfs:comment "맨체스터 유나이티드는 영국 잉글랜드의 맨체스터를 연고로 하는 구단이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00040 ;
+    rdf:predicate schema:location ;
+    rdf:object dm:A00042 ;
+    rdfs:comment "알나스르는 사우디아라비아 리야드를 연고로 하는 구단이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00036 ;
+    rdf:predicate for:manages ;
+    rdf:object dm:A00039 ;
+    rdfs:comment "에릭 텐 하흐는 2022년 5월부터 2024년 10월까지 맨체스터 유나이티드의 감독이었다. 호날두와 갈등을 빚은 2022-23 시즌의 감독이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00037 ;
+    rdf:predicate schema:memberOf ;
+    rdf:object dm:A00039 ;
+    rdfs:comment "메이슨 그린우드는 2024년 7월 마르세유로 이적하기 전까지 맨체스터 유나이티드 소속이었다. 2022년 당시 호날두의 팀 동료였다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00038 ;
+    rdf:predicate schema:memberOf ;
+    rdf:object dm:A00039 ;
+    rdfs:comment "해리 매과이어는 2019년 8월 입단해 현재까지 맨체스터 유나이티드 소속이다(2026년 4월 2027년 6월까지 재계약)."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00043 ;
+    rdf:predicate dm:hasParticipant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "이 계약 해지의 한쪽 당사자는 크리스티아누 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00043 ;
+    rdf:predicate dm:hasParticipant ;
+    rdf:object dm:A00039 ;
+    rdfs:comment "이 계약 해지의 다른 한쪽 당사자는 맨체스터 유나이티드이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00045 ;
+    rdf:predicate dm:precedes ;
+    rdf:object dm:A00043 ;
+    rdfs:comment "피어스 모건 인터뷰가 공개되고 9일 뒤에 계약 해지가 이루어졌다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00045 ;
+    rdf:predicate dm:hasParticipant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "크리스티아누 호날두는 피어스 모건 인터뷰에 참여했다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00045 ;
+    rdf:predicate dm:mentions ;
+    rdf:object dm:A00036 ;
+    rdfs:comment "이 인터뷰에서 호날두는 텐 하흐 감독을 존중하지 않는다고 말했다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00045 ;
+    rdf:predicate dm:mentions ;
+    rdf:object dm:A00039 ;
+    rdfs:comment "이 인터뷰에서 호날두는 맨체스터 유나이티드에 대한 불만을 드러냈다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00051 ;
+    rdf:predicate dm:hasOption ;
+    rdf:object dm:A00052 ;
+    rdfs:comment "이 딜레마의 선택지 가운데 하나는 맨체스터 유나이티드에 남는 것이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00051 ;
+    rdf:predicate dm:hasOption ;
+    rdf:object dm:A00053 ;
+    rdfs:comment "이 딜레마의 선택지 가운데 하나는 알나스르로 가는 것이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00043 ;
+    rdf:predicate for:closesOption ;
+    rdf:object dm:A00052 ;
+    rdfs:comment "계약 해지로 맨체스터 유나이티드에 남는 선택지는 더 이상 고를 수 없게 되었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00053 ;
+    rdf:predicate dm:isRealizedBy ;
+    rdf:object dm:A00044 ;
+    rdfs:comment "알나스르로 가는 선택지는 2022년 12월 30일 호날두의 알나스르 입단으로 실제로 이루어졌다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00051 ;
+    rdf:predicate dm:hasDecisionMaker ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "이 딜레마에서 선택을 해야 하는 사람은 크리스티아누 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00044 ;
+    rdf:predicate dm:isOutcomeOf ;
+    rdf:object dm:A00051 ;
+    rdfs:comment "호날두의 알나스르 입단은 이 딜레마에서 실제로 일어난 결과이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00053 ;
+    rdf:predicate dm:actualChooser ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "알나스르로 가는 선택지를 실제로 고른 사람은 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00044 ;
+    rdf:predicate dm:hasParticipant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "알나스르 입단의 당사자는 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00044 ;
+    rdf:predicate dm:hasParticipant ;
+    rdf:object dm:A00040 ;
+    rdfs:comment "알나스르 입단의 다른 당사자는 알나스르 구단이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00043 ;
+    rdf:predicate for:basedOn ;
+    rdf:object dm:A00033 ;
+    rdfs:comment "호날두와 맨체스터 유나이티드의 계약 해지는 상호 합의 계약 해지 방식으로 이루어졌다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00044 ;
+    rdf:predicate for:basedOn ;
+    rdf:object dm:A00034 ;
+    rdfs:comment "호날두는 맨체스터 유나이티드와 계약을 해지한 뒤 이적료 없는 자유계약 신분으로 알나스르에 입단했다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00049 ;
+    rdf:predicate dm:precedes ;
+    rdf:object dm:A00050 ;
+    rdfs:comment "2021-22 시즌 챔피언스리그 진출 실패가 확정된 뒤 2022년 7월 프리시즌 불참이 있었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00050 ;
+    rdf:predicate dm:precedes ;
+    rdf:object dm:A00048 ;
+    rdfs:comment "2022년 7월 프리시즌 불참 뒤 10월 토트넘전 교체 투입 거부가 있었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00048 ;
+    rdf:predicate dm:precedes ;
+    rdf:object dm:A00045 ;
+    rdfs:comment "10월 토트넘전 교체 투입 거부 뒤 11월 피어스 모건 인터뷰가 공개되었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00043 ;
+    rdf:predicate dm:precedes ;
+    rdf:object dm:A00044 ;
+    rdfs:comment "맨체스터 유나이티드와 계약을 해지한 뒤 알나스르에 입단했다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00044 ;
+    rdf:predicate dm:precedes ;
+    rdf:object dm:A00173 ;
+    rdfs:comment "입단 발표 4일 뒤 공식 입단 기자회견이 열렸다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00049 ;
+    rdf:predicate dm:hasParticipant ;
+    rdf:object dm:A00039 ;
+    rdfs:comment "챔피언스리그 진출에 실패한 구단은 맨체스터 유나이티드이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00050 ;
+    rdf:predicate dm:hasParticipant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "프리시즌에 불참한 사람은 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00048 ;
+    rdf:predicate dm:hasParticipant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "토트넘전에서 교체 투입을 거부한 사람은 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00048 ;
+    rdf:predicate dm:hasParticipant ;
+    rdf:object dm:A00039 ;
+    rdfs:comment "이 경기는 맨체스터 유나이티드의 토트넘전이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00045 ;
+    rdf:predicate dm:hasParticipant ;
+    rdf:object dm:A00181 ;
+    rdfs:comment "이 인터뷰의 진행자는 피어스 모건이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00049 ;
+    rdf:predicate dm:isReasonFor ;
+    rdf:object dm:A00053 ;
+    rdfs:comment "작업자 해석: 챔피언스리그에 나가지 못하게 되자 호날두는 챔피언스리그 구단으로 이적하기를 원했고, 이것이 결국 맨체스터 유나이티드를 떠나는 쪽으로 이어졌다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00058 ;
+    rdf:predicate dm:isReasonFor ;
+    rdf:object dm:A00053 ;
+    rdfs:comment "작업자 해석: 구단이 자신의 말을 믿지 않았다는 불신이 떠나는 선택으로 이어졌다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00166 ;
+    rdf:predicate dm:isReasonFor ;
+    rdf:object dm:A00053 ;
+    rdfs:comment "작업자 해석: 감독과 서로 존중하지 않는 관계가 팀을 떠나는 이유가 되었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00167 ;
+    rdf:predicate dm:isReasonFor ;
+    rdf:object dm:A00053 ;
+    rdfs:comment "작업자 해석: 구단이 자신을 내보내려 한다는 배신감이 떠나는 이유가 되었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00169 ;
+    rdf:predicate dm:isReasonFor ;
+    rdf:object dm:A00052 ;
+    rdfs:comment "작업자 해석: 구단에 대한 애정은 맨체스터 유나이티드에 남을 이유였다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00172 ;
+    rdf:predicate dm:isReasonFor ;
+    rdf:object dm:A00053 ;
+    rdfs:comment "작업자 해석: 축구 역사상 최고 수준의 연봉은 알나스르를 고를 큰 이유였다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00059 ;
+    rdf:predicate dm:isReasonFor ;
+    rdf:object dm:A00053 ;
+    rdfs:comment "호날두는 유럽에서 할 일을 다 했다는 것을 알나스르로 간 이유로 들었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00174 ;
+    rdf:predicate dm:isReasonFor ;
+    rdf:object dm:A00053 ;
+    rdfs:comment "호날두는 다른 제안이 많았지만 알나스르와의 약속을 지켰다고 말했다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00175 ;
+    rdf:predicate dm:isReasonFor ;
+    rdf:object dm:A00053 ;
+    rdfs:comment "호날두는 사우디 축구와 이 나라에 대한 시각을 바꾸는 것을 새 도전의 의미로 들었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00178 ;
+    rdf:predicate dm:isReasonFor ;
+    rdf:object dm:A00053 ;
+    rdfs:comment "호날두는 사우디에서 새 기록을 깨는 것을 목표로 들었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00165 ;
+    rdf:predicate schema:publisher ;
+    rdf:object dm:A00148 ;
+    rdfs:comment "이 인터뷰 영상은 피어스 모건 언센서드 유튜브 채널에 올라왔다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00165 ;
+    rdf:predicate dm:reports ;
+    rdf:object dm:A00045 ;
+    rdfs:comment "이 영상은 호날두의 피어스 모건 인터뷰를 담고 있다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00056 ;
+    rdf:predicate schema:publisher ;
+    rdf:object dm:A00055 ;
+    rdfs:comment "이 기사는 스카이스포츠가 냈다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00056 ;
+    rdf:predicate dm:reports ;
+    rdf:object dm:A00045 ;
+    rdfs:comment "이 기사는 호날두의 피어스 모건 인터뷰 내용을 보도했다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00058 ;
+    rdf:predicate dm:hasClaimant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "이 진술의 주장자는 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00058 ;
+    rdf:predicate dm:revealedIn ;
+    rdf:object dm:A00056 ;
+    rdfs:comment "이 진술은 스카이스포츠 2022-11-15 기사에 실렸다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00058 ;
+    rdf:predicate dm:isAbout ;
+    rdf:object dm:A00050 ;
+    rdfs:comment "이 진술은 2022년 프리시즌 불참에 관한 것이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00166 ;
+    rdf:predicate dm:hasClaimant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "이 진술의 주장자는 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00166 ;
+    rdf:predicate dm:isAbout ;
+    rdf:object dm:A00036 ;
+    rdfs:comment "이 진술은 텐 하흐 감독에 관한 것이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00166 ;
+    rdf:predicate dm:revealedIn ;
+    rdf:object dm:A00165 ;
+    rdfs:comment "이 진술은 피어스 모건 인터뷰 영상에서 공개되었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00167 ;
+    rdf:predicate dm:hasClaimant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "이 진술의 주장자는 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00167 ;
+    rdf:predicate dm:isAbout ;
+    rdf:object dm:A00039 ;
+    rdfs:comment "이 진술은 맨체스터 유나이티드 구단에 관한 것이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00167 ;
+    rdf:predicate dm:revealedIn ;
+    rdf:object dm:A00165 ;
+    rdfs:comment "이 진술은 피어스 모건 인터뷰 영상에서 공개되었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00168 ;
+    rdf:predicate dm:hasClaimant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "이 진술의 주장자는 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00168 ;
+    rdf:predicate dm:isAbout ;
+    rdf:object dm:A00039 ;
+    rdfs:comment "이 진술은 맨체스터 유나이티드 구단에 관한 것이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00168 ;
+    rdf:predicate dm:revealedIn ;
+    rdf:object dm:A00165 ;
+    rdfs:comment "이 진술은 피어스 모건 인터뷰 영상에서 공개되었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00169 ;
+    rdf:predicate dm:hasClaimant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "이 진술의 주장자는 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00169 ;
+    rdf:predicate dm:isAbout ;
+    rdf:object dm:A00039 ;
+    rdfs:comment "이 진술은 맨체스터 유나이티드 구단에 관한 것이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00169 ;
+    rdf:predicate dm:revealedIn ;
+    rdf:object dm:A00165 ;
+    rdfs:comment "이 진술은 피어스 모건 인터뷰 영상에서 공개되었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00170 ;
+    rdf:predicate dm:hasClaimant ;
+    rdf:object dm:A00036 ;
+    rdfs:comment "이 진술의 주장자는 텐 하흐 감독이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00170 ;
+    rdf:predicate dm:isAbout ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "이 진술은 호날두에 관한 것이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00048 ;
+    rdf:predicate dm:isEvidenceFor ;
+    rdf:object dm:A00166 ;
+    rdfs:comment "토트넘전 교체 투입 거부와 그 뒤의 명단 제외는 호날두와 텐 하흐 사이의 불신을 보여 주는 사건이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00046 ;
+    rdf:predicate dm:hasClaimant ;
+    rdf:object dm:A00149 ;
+    rdfs:comment "이 보도의 주장자는 스포탈코리아이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00046 ;
+    rdf:predicate dm:isAbout ;
+    rdf:object dm:A00037 ;
+    rdfs:comment "이 보도는 메이슨 그린우드의 플레이에 관한 것이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00047 ;
+    rdf:predicate dm:hasClaimant ;
+    rdf:object dm:A00149 ;
+    rdfs:comment "이 보도의 주장자는 스포탈코리아이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00047 ;
+    rdf:predicate dm:isAbout ;
+    rdf:object dm:A00038 ;
+    rdfs:comment "이 보도는 해리 매과이어와 호날두의 팀 내 주도권 갈등에 관한 것이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00173 ;
+    rdf:predicate dm:hasParticipant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "입단 기자회견의 주인공은 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00173 ;
+    rdf:predicate dm:hasParticipant ;
+    rdf:object dm:A00040 ;
+    rdfs:comment "입단 기자회견은 알나스르가 열었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00057 ;
+    rdf:predicate schema:publisher ;
+    rdf:object dm:A00054 ;
+    rdfs:comment "이 기사는 BBC가 냈다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00057 ;
+    rdf:predicate dm:reports ;
+    rdf:object dm:A00173 ;
+    rdfs:comment "이 기사는 호날두의 알나스르 입단 기자회견을 보도했다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00059 ;
+    rdf:predicate dm:hasClaimant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "이 진술의 주장자는 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00059 ;
+    rdf:predicate dm:revealedIn ;
+    rdf:object dm:A00057 ;
+    rdfs:comment "이 진술은 BBC 2023-01-03 기사에 실렸다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00174 ;
+    rdf:predicate dm:hasClaimant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "이 진술의 주장자는 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00174 ;
+    rdf:predicate dm:revealedIn ;
+    rdf:object dm:A00057 ;
+    rdfs:comment "이 진술은 BBC 2023-01-03 기사에 실렸다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00171 ;
+    rdf:predicate schema:publisher ;
+    rdf:object dm:A00054 ;
+    rdfs:comment "이 기사는 BBC가 냈다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00171 ;
+    rdf:predicate dm:reports ;
+    rdf:object dm:A00044 ;
+    rdfs:comment "이 기사는 호날두의 알나스르 입단을 보도했다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00172 ;
+    rdf:predicate dm:hasClaimant ;
+    rdf:object dm:A00054 ;
+    rdfs:comment "이 보도의 주장자는 BBC이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00172 ;
+    rdf:predicate dm:revealedIn ;
+    rdf:object dm:A00171 ;
+    rdfs:comment "이 보도는 BBC 2022-12-30 기사에 실렸다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00172 ;
+    rdf:predicate dm:isAbout ;
+    rdf:object dm:A00044 ;
+    rdfs:comment "이 보도는 호날두의 알나스르 입단 조건에 관한 것이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00177 ;
+    rdf:predicate schema:publisher ;
+    rdf:object dm:A00176 ;
+    rdfs:comment "이 기사는 TNT 스포츠가 냈다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00177 ;
+    rdf:predicate dm:reports ;
+    rdf:object dm:A00173 ;
+    rdfs:comment "이 기사는 호날두의 알나스르 입단 기자회견을 보도했다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00175 ;
+    rdf:predicate dm:hasClaimant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "이 진술의 주장자는 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00175 ;
+    rdf:predicate dm:revealedIn ;
+    rdf:object dm:A00177 ;
+    rdfs:comment "이 진술은 TNT 스포츠 2023-01-03 기사에 실렸다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00179 ;
+    rdf:predicate schema:publisher ;
+    rdf:object dm:A00180 ;
+    rdfs:comment "이 기사는 Dawn이 냈다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00179 ;
+    rdf:predicate dm:reports ;
+    rdf:object dm:A00173 ;
+    rdfs:comment "이 기사는 호날두의 알나스르 입단 기자회견을 보도했다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00178 ;
+    rdf:predicate dm:hasClaimant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "이 진술의 주장자는 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00178 ;
+    rdf:predicate dm:revealedIn ;
+    rdf:object dm:A00179 ;
+    rdfs:comment "이 진술은 Dawn 2023-01-03 기사에 실렸다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00035 ;
+    rdf:predicate schema:memberOf ;
+    rdf:object dm:A00152 ;
+    rdfs:comment "크리스티아누 호날두는 2002년부터 2003년까지 스포르팅 CP 소속이었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00035 ;
+    rdf:predicate schema:memberOf ;
+    rdf:object dm:A00150 ;
+    rdfs:comment "크리스티아누 호날두는 2009년부터 2018년까지 레알 마드리드 소속이었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00035 ;
+    rdf:predicate schema:memberOf ;
+    rdf:object dm:A00151 ;
+    rdfs:comment "크리스티아누 호날두는 2018년부터 2021년까지 유벤투스 소속이었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00035 ;
+    rdf:predicate schema:memberOf ;
+    rdf:object dm:A00153 ;
+    rdfs:comment "크리스티아누 호날두는 2003년 포르투갈 국가대표로 데뷔했고, 2022년 당시 대표팀 주장이었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00152 ;
+    rdf:predicate schema:location ;
+    rdf:object dm:A00154 ;
+    rdfs:comment "스포르팅 CP는 포르투갈 리스본을 연고로 한다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00035 ;
+    rdf:predicate dm:receivedAward ;
+    rdf:object dm:A00155 ;
+    rdfs:comment "크리스티아누 호날두는 발롱도르를 다섯 번 받았다(2008, 2013, 2014, 2016, 2017)."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00035 ;
+    rdf:predicate dm:receivedAward ;
+    rdf:object dm:A00156 ;
+    rdfs:comment "크리스티아누 호날두는 UEFA 챔피언스리그에서 다섯 번 우승했다(2008, 2014, 2016, 2017, 2018)."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00035 ;
+    rdf:predicate dm:receivedAward ;
+    rdf:object dm:A00158 ;
+    rdfs:comment "크리스티아누 호날두는 2024년 8월 UEFA 챔피언스리그 역대 최다 득점자 특별상을 받았다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00157 ;
+    rdf:predicate dm:hasParticipant ;
+    rdf:object dm:A00153 ;
+    rdfs:comment "유로 2016에서 우승한 팀은 포르투갈 축구 국가대표팀이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00157 ;
+    rdf:predicate dm:hasParticipant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "크리스티아누 호날두는 주장으로 유로 2016 우승에 참여했다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00158 ;
+    rdf:predicate dm:hasParticipant ;
+    rdf:object dm:A00159 ;
+    rdfs:comment "이 특별상은 UEFA가 주었다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00160 ;
+    rdf:predicate schema:publisher ;
+    rdf:object dm:A00159 ;
+    rdfs:comment "이 자료는 UEFA가 냈다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00160 ;
+    rdf:predicate dm:reports ;
+    rdf:object dm:A00158 ;
+    rdfs:comment "이 자료는 호날두의 챔피언스리그 역대 최다 득점자 특별상 수여를 알렸다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00162 ;
+    rdf:predicate schema:publisher ;
+    rdf:object dm:A00161 ;
+    rdfs:comment "이 인터뷰는 포포투에 실렸다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00163 ;
+    rdf:predicate dm:hasClaimant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "이 진술의 주장자는 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00163 ;
+    rdf:predicate dm:revealedIn ;
+    rdf:object dm:A00162 ;
+    rdfs:comment "이 진술은 포포투 2009-11 인터뷰에 실렸다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00164 ;
+    rdf:predicate dm:hasClaimant ;
+    rdf:object dm:A00035 ;
+    rdfs:comment "이 진술의 주장자는 호날두이다."@ko .
+
+[] a rdf:Statement ;
+    rdf:subject dm:A00164 ;
+    rdf:predicate dm:revealedIn ;
+    rdf:object dm:A00162 ;
+    rdfs:comment "이 진술은 포포투 2009-11 인터뷰에 실렸다."@ko .
+
